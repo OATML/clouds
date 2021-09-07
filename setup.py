@@ -1,0 +1,30 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="clouds",
+    version="0.0.0",
+    description="Exploring the effects of aerosols on proxies for cloud reflectivity",
+    long_description_content_type="text/markdown",
+    url="https://github.com/anndvision/clouds",
+    author="Andrew Jesson, Peter Manshausen, and Alyson Douglas",
+    author_email="andrew.jesson@cs.ox.ac.uk",
+    license="Apache-2.0",
+    packages=find_packages(),
+    install_requires=[
+        "click>=8.0.1",
+        "torch>=1.9.0",
+        "numpy>=1.21.2",
+        "scipy>=1.7.1",
+        "pandas>=1.3.2",
+        "seaborn>=0.11.2",
+        "hyperopt>=0.2.5",
+        "ray[tune]>=1.6.0",
+        "ray[default]>=1.6.0",
+        "matplotlib>=3.4.3",
+        "tensorboard>=2.6.0",
+        "torchvision>=0.10.0",
+        "scikit-learn>=0.24.2",
+        "pytorch-ignite>=0.4.6",
+    ],
+    entry_points={"console_scripts": ["clouds=clouds.main:cli"],},
+)
