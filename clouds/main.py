@@ -3,6 +3,8 @@ import click
 
 from torch import cuda
 
+from pathlib import Path
+
 
 @click.group(chain=True)
 @click.pass_context
@@ -41,6 +43,28 @@ def train(
             "gpu_per_trial": gpu_per_model,
             "seed": seed,
             "tune": False,
+        }
+    )
+
+
+@cli.command("jasmin")
+@click.pass_context
+@click.option(
+    "--root", type=str, required=True, help="location of dataset",
+)
+def jasmin(
+    context, root,
+):
+    job_dir = Path(context.obj.get("job_dir"))
+    dataset_name = "jasmin"
+    experiment_dir = job_dir / dataset_name
+    context.obj.update(
+        {
+            "dataset_name": dataset_name,
+            "experiment_dir": str(experiment_dir),
+            "ds_train": {"root": root, "split": "train",},
+            "ds_valid": {"root": root, "split": "valid",},
+            "ds_test": {"root": root, "split": "test",},
         }
     )
 
