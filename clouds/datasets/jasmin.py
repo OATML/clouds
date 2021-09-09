@@ -20,8 +20,10 @@ class JASMIN(data.Dataset):
         # Handle default values
         if x_vars is None:
             x_vars = [
+                "RH900",
                 "RH850",
                 "RH700",
+                "LTS",
                 "EIS",
                 "w500",
                 "whoi_sst",
@@ -63,7 +65,7 @@ class JASMIN(data.Dataset):
         self.targets = self.targets_xfm.transform(_df[y_vars].to_numpy(dtype="float32"))
         # Variable properties
         self.dim_input = self.data.shape[-1]
-        self.dim_targets = self.treatments.shape[-1]
+        self.dim_targets = self.targets.shape[-1]
         self.dim_treatments = t_bins - 1
         self.var_names = x_vars + [t_var] + y_vars
 
