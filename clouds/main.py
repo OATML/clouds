@@ -5,6 +5,8 @@ from torch import cuda
 
 from pathlib import Path
 
+from clouds import workflows
+
 
 @click.group(chain=True)
 @click.pass_context
@@ -40,7 +42,7 @@ def train(
     context.obj.update(
         {
             "job_dir": job_dir,
-            "gpu_per_trial": gpu_per_model,
+            "gpu_per_model": gpu_per_model,
             "seed": seed,
             "mode": "train",
         }
@@ -82,7 +84,7 @@ def tune(
         {
             "job_dir": job_dir,
             "max_samples": max_samples,
-            "gpu_per_trial": gpu_per_model,
+            "gpu_per_model": gpu_per_model,
             "seed": seed,
             "mode": "tune",
         }
@@ -117,7 +119,7 @@ def predict(
     context.obj.update(
         {
             "job_dir": job_dir,
-            "gpu_per_trial": gpu_per_model,
+            "gpu_per_model": gpu_per_model,
             "seed": seed,
             "mode": "predict",
         }
@@ -150,31 +152,31 @@ def jasmin(
 @click.pass_context
 @click.option("--dim-hidden", default=400, type=int, help="num neurons")
 @click.option("--num-components", default=5, type=int, help="num mixture components")
-@click.option("--depth", default=3, type=int, help="depth of feature extractor")
+@click.option("--depth", default=5, type=int, help="depth of feature extractor")
 @click.option(
     "--negative-slope",
-    default=-1,
+    default=0.0,
     type=float,
     help="negative slope of leaky relu, default=-1 use elu",
 )
 @click.option(
-    "--dropout-rate", default=0.15, type=float, help="dropout rate, default=0.1"
+    "--dropout-rate", default=0.2, type=float, help="dropout rate, default=0.1"
 )
 @click.option(
     "--spectral-norm",
-    default=0.95,
+    default=1.5,
     type=float,
     help="Spectral normalization coefficient. If 0.0 do not use spectral norm, default=0.0",
 )
 @click.option(
     "--learning-rate",
-    default=1e-3,
+    default=5e-4,
     type=float,
     help="learning rate for gradient descent, default=1e-3",
 )
 @click.option(
     "--batch-size",
-    default=32,
+    default=2048,
     type=int,
     help="number of examples to read during each training step, default=100",
 )
@@ -223,9 +225,9 @@ def ensemble(
 
         if context.obj["mode"] == "train":
 
-            @ray.remote(num_gpus=context.obj.get("gpu_per_trial"),)
+            @ray.remote(num_gpus=context.obj.get("gpu_per_model"),)
             def trainer(**kwargs):
-                func = lambda args: print("training")
+                func = workflows.training.ensemble_trainer(**kwargs)
                 return func
 
             results = []
@@ -240,7 +242,7 @@ def ensemble(
             ray.get(results)
         elif context.obj["mode"] == "predict":
 
-            @ray.remote(num_gpus=context.obj.get("gpu_per_trial"),)
+            @ray.remote(num_gpus=context.obj.get("gpu_per_model"),)
             def predictor(**kwargs):
                 func = lambda args: print("predicting")
                 return func
