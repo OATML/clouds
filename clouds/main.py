@@ -58,7 +58,7 @@ def train(
 )
 @click.option(
     "--max-samples",
-    default=200,
+    default=500,
     type=int,
     help="maximum number of search space samples, default=100",
 )
@@ -150,9 +150,9 @@ def jasmin(
 
 @cli.command("ensemble")
 @click.pass_context
-@click.option("--dim-hidden", default=400, type=int, help="num neurons")
-@click.option("--num-components", default=5, type=int, help="num mixture components")
-@click.option("--depth", default=5, type=int, help="depth of feature extractor")
+@click.option("--dim-hidden", default=800, type=int, help="num neurons")
+@click.option("--num-components", default=20, type=int, help="num mixture components")
+@click.option("--depth", default=3, type=int, help="depth of feature extractor")
 @click.option(
     "--negative-slope",
     default=0.0,
@@ -160,28 +160,28 @@ def jasmin(
     help="negative slope of leaky relu, default=-1 use elu",
 )
 @click.option(
-    "--dropout-rate", default=0.2, type=float, help="dropout rate, default=0.1"
+    "--dropout-rate", default=0.5, type=float, help="dropout rate, default=0.1"
 )
 @click.option(
     "--spectral-norm",
-    default=1.5,
+    default=0.0,
     type=float,
     help="Spectral normalization coefficient. If 0.0 do not use spectral norm, default=0.0",
 )
 @click.option(
     "--learning-rate",
-    default=5e-4,
+    default=2e-4,
     type=float,
     help="learning rate for gradient descent, default=1e-3",
 )
 @click.option(
     "--batch-size",
-    default=2048,
+    default=4096,
     type=int,
     help="number of examples to read during each training step, default=100",
 )
 @click.option(
-    "--epochs", type=int, default=500, help="number of training epochs, default=50"
+    "--epochs", type=int, default=400, help="number of training epochs, default=400"
 )
 @click.option(
     "--ensemble-size",
@@ -206,7 +206,7 @@ def ensemble(
         context.obj.update(
             {"epochs": epochs, "ensemble_size": ensemble_size,}
         )
-        print("tuning")
+        workflows.tuning.hyper_tune(config=context.obj)
     else:
         context.obj.update(
             {

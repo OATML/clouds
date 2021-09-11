@@ -153,7 +153,9 @@ class PyTorchModel(BaseModel):
         self.evaluator.run(tune_loader)
         tune_metrics = self.evaluator.state.metrics
         if tune.is_session_enabled():
-            tune.report(mean_loss=tune_metrics["loss"])
+            tune.report(
+                training_iteration=engine.state.epoch, mean_loss=tune_metrics["loss"]
+            )
         justify = max(len(k) for k in tune_metrics) + 2
         for k, v in tune_metrics.items():
             if type(v) == float:
