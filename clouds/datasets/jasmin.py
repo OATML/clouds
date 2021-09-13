@@ -68,6 +68,9 @@ class JASMIN(data.Dataset):
         self.dim_targets = self.targets.shape[-1]
         self.dim_treatments = t_bins - 1
         self.var_names = x_vars + [t_var] + y_vars
+        self.data_names = x_vars
+        self.target_names = y_vars
+        self.treatment_names = [t_var]
 
     @property
     def data_frame(self):
@@ -78,7 +81,10 @@ class JASMIN(data.Dataset):
                 self.targets_xfm.inverse_transform(self.targets),
             ],
         )
-        return pd.DataFrame(data=data, columns=self.var_names)
+        return pd.DataFrame(
+            data=data,
+            columns=self.data_names + self.treatment_names + self.target_names,
+        )
 
     def __len__(self) -> int:
         return len(self.targets)
