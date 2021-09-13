@@ -204,7 +204,27 @@ class MultiTaskNeuralNetwork(core.PyTorchModel):
             )
         return mu1 - mu0
 
-    def predict_y(self, dataset):
+    def predict_y_mean(self, dataset):
+        dl = data.DataLoader(
+            dataset,
+            batch_size=2 * self.batch_size,
+            shuffle=False,
+            drop_last=False,
+            num_workers=self.num_workers,
+        )
+        mean = []
+        self.network_y.eval()
+        with torch.no_grad():
+            for batch in dl:
+                inputs, treatments, _ = self.preprocess(batch)
+                mean.append(self.network_y([inputs, treatments]).mean)
+        if dataset.targets_xfm is not None:
+            mean = dataset.targets_xfm.inverse_transform(
+                torch.cat(mean, dim=0).to("cpu").numpy()
+            )
+        return mean
+
+    def sample_y(self, dataset):
         dl = data.DataLoader(
             dataset,
             batch_size=2 * self.batch_size,

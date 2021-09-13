@@ -67,7 +67,6 @@ class JASMIN(data.Dataset):
         self.dim_input = self.data.shape[-1]
         self.dim_targets = self.targets.shape[-1]
         self.dim_treatments = t_bins - 1
-        self.var_names = x_vars + [t_var] + y_vars
         self.data_names = x_vars
         self.target_names = y_vars
         self.treatment_names = [t_var]
