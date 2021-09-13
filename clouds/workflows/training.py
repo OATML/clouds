@@ -5,7 +5,7 @@ from clouds import models
 from clouds import datasets
 
 
-def ensemble_trainer(
+def train_ensemble(
     config, experiment_dir, ensemble_id,
 ):
     dataset_name = config.get("dataset_name")
