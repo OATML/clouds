@@ -227,7 +227,7 @@ def ensemble(
 
             @ray.remote(num_gpus=context.obj.get("gpu_per_model"),)
             def trainer(**kwargs):
-                func = workflows.training.ensemble_trainer(**kwargs)
+                func = workflows.training.train_ensemble(**kwargs)
                 return func
 
             results = []
@@ -242,21 +242,9 @@ def ensemble(
             ray.get(results)
         elif context.obj["mode"] == "predict":
 
-            @ray.remote(num_gpus=context.obj.get("gpu_per_model"),)
-            def predictor(**kwargs):
-                func = lambda args: print("predicting")
-                return func
-
-            results = []
-            for ensemble_id in range(ensemble_size):
-                results.append(
-                    predictor.remote(
-                        config=context.obj,
-                        experiment_dir=context.obj.get("experiment_dir"),
-                        ensemble_id=ensemble_id,
-                    )
-                )
-            ray.get(results)
+            workflows.prediction.predict_ensemble(
+                config=context.obj, experiment_dir=context.obj.get("experiment_dir")
+            )
 
 
 if __name__ == "__main__":
