@@ -35,7 +35,7 @@ def predict_ensemble(
     config_path = experiment_dir / "config.json"
     if not config_path.exists():
         raise FileNotFoundError(
-            "Config file does not exist, are you sure you have specified the right model?"
+            f"Config file {config_path} does not exist, are you sure you have specified the right --job-dir or model parameterrs?"
         )
 
     for ensemble_id in range(ensemble_size):
@@ -92,4 +92,28 @@ def update_dataframe(model, dataset, dataframe, ensemble_id):
     for i, label in enumerate(dataset.target_names):
         dataframe[f"CATE {label} {ensemble_id}"] = tau[:, i]
         dataframe[f"Y {label} {ensemble_id}"] = y[:, i]
+    dataframe = update_summary_stats(dataset, dataframe,)
     return dataframe
+
+
+def update_summary_stats(dataset, dataframe):
+    for i, label in enumerate(dataset.target_names):
+        dataframe[f"Predicted {TARGET_KEYS[label]}"] = dataframe[
+            [c for c in dataframe.columns if f"Y {label}" in c]
+        ].mean(1)
+        dataframe[f"Observed {TARGET_KEYS[label]}"] = dataframe[f"{label}"]
+        dataframe[f"CATE {TARGET_KEYS[label]}"] = dataframe[
+            [c for c in dataframe.columns if f"CATE {label}" in c]
+        ].mean(1)
+        dataframe[f"CATE Uncertainty {TARGET_KEYS[label]}"] = 2 * dataframe[
+            [c for c in dataframe.columns if f"CATE {label}" in c]
+        ].std(1)
+    return dataframe
+
+
+TARGET_KEYS = {
+    "l_re": r"$r_e$",
+    "liq_pc": r"$CF_w$",
+    "cod": r"$\tau$",
+    "cwp": r"$LWP$",
+}
