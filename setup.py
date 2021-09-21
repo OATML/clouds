@@ -11,6 +11,7 @@ setup(
     license="Apache-2.0",
     packages=find_packages(),
     install_requires=[
+        "econml",
         "click>=8.0.1",
         "torch>=1.9.0",
         "numpy>=1.21.2",
