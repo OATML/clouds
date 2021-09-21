@@ -247,5 +247,24 @@ def ensemble(
             )
 
 
+@cli.command("plot")
+@click.option(
+    "--csv-path",
+    type=str,
+    required=True,
+    help="path to the csv file containing model predictions",
+)
+@click.option(
+    "--output-dir", type=str, required=True, help="directory to write plots",
+)
+@click.pass_context
+def plot(
+    context, csv_path, output_dir,
+):
+    workflows.plotting.plot(
+        csv_path=Path(csv_path), output_dir=Path(output_dir),
+    )
+
+
 if __name__ == "__main__":
     cli()
