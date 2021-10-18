@@ -31,7 +31,7 @@ def tune_multitask(config):
         num_components=num_components,
         depth=depth,
         negative_slope=negative_slope,
-        batch_norm=False,
+        layer_norm=False,
         spectral_norm=spectral_norm,
         dropout_rate=dropout_rate,
         num_examples=len(train_dataset),

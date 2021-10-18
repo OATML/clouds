@@ -5,14 +5,14 @@ from clouds.models.modules.spectral_norm import spectral_norm_fc
 
 class DenseActivation(nn.Module):
     def __init__(
-        self, dim_input, negative_slope, dropout_rate, batch_norm,
+        self, dim_input, negative_slope, dropout_rate, layer_norm,
     ):
         super(DenseActivation, self).__init__()
         self.op = nn.Sequential(
-            nn.BatchNorm1d(num_features=dim_input) if batch_norm else nn.Identity(),
+            nn.LayerNorm(dim_input) if layer_norm else nn.Identity(),
             nn.LeakyReLU(negative_slope=negative_slope)
             if negative_slope >= 0.0
-            else nn.ELU(),
+            else nn.GELU(),
             nn.Dropout(p=dropout_rate),
         )
 
@@ -28,7 +28,7 @@ class DensePreactivation(nn.Module):
         bias,
         negative_slope,
         dropout_rate,
-        batch_norm,
+        layer_norm,
         spectral_norm,
     ):
         super(DensePreactivation, self).__init__()
@@ -37,7 +37,7 @@ class DensePreactivation(nn.Module):
                 dim_input=dim_input,
                 negative_slope=negative_slope,
                 dropout_rate=dropout_rate,
-                batch_norm=batch_norm,
+                layer_norm=layer_norm,
             )
         )
         linear = nn.Linear(in_features=dim_input, out_features=dim_output, bias=bias)
@@ -58,7 +58,7 @@ class DenseResidual(nn.Module):
         bias,
         negative_slope,
         dropout_rate,
-        batch_norm,
+        layer_norm,
         spectral_norm,
     ):
         super(DenseResidual, self).__init__()
@@ -82,7 +82,7 @@ class DenseResidual(nn.Module):
             bias=bias,
             negative_slope=negative_slope,
             dropout_rate=dropout_rate,
-            batch_norm=batch_norm,
+            layer_norm=layer_norm,
             spectral_norm=spectral_norm,
         )
 
@@ -95,11 +95,11 @@ MODULES = {"basic": DensePreactivation, "resnet": DenseResidual}
 
 class DenseLinear(nn.Module):
     def __init__(
-        self, dim_input, dim_output, batch_norm, spectral_norm,
+        self, dim_input, dim_output, layer_norm, spectral_norm,
     ):
         super(DenseLinear, self).__init__()
         self.op = nn.Linear(
-            in_features=dim_input, out_features=dim_output, bias=not batch_norm,
+            in_features=dim_input, out_features=dim_output, bias=not layer_norm,
         )
         if spectral_norm > 0.0:
             self.op = spectral_norm_fc(self.op, spectral_norm)
@@ -116,7 +116,7 @@ class DenseFeatureExtractor(nn.Module):
         dim_hidden,
         depth,
         negative_slope,
-        batch_norm,
+        layer_norm,
         dropout_rate,
         spectral_norm,
         activate_output=True,
@@ -131,10 +131,10 @@ class DenseFeatureExtractor(nn.Module):
                 module=hidden_module(
                     dim_input=_dim_input,
                     dim_output=dim_hidden,
-                    bias=not batch_norm,
+                    bias=not layer_norm,
                     negative_slope=negative_slope,
                     dropout_rate=dropout_rate,
-                    batch_norm=batch_norm,
+                    layer_norm=layer_norm,
                     spectral_norm=spectral_norm,
                 ),
             )
@@ -145,7 +145,7 @@ class DenseFeatureExtractor(nn.Module):
                     dim_input=dim_hidden,
                     negative_slope=negative_slope,
                     dropout_rate=dropout_rate,
-                    batch_norm=batch_norm,
+                    layer_norm=layer_norm,
                 ),
             )
         self.dim_output = dim_hidden

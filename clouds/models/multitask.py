@@ -24,7 +24,7 @@ class MultiTaskNeuralNetwork(core.PyTorchModel):
         dim_hidden,
         depth,
         negative_slope,
-        batch_norm,
+        layer_norm,
         spectral_norm,
         dropout_rate,
         num_examples,
@@ -47,7 +47,7 @@ class MultiTaskNeuralNetwork(core.PyTorchModel):
             modules.DenseLinear(
                 dim_input=dim_input,
                 dim_output=dim_hidden,
-                batch_norm=batch_norm,
+                layer_norm=layer_norm,
                 spectral_norm=spectral_norm,
             ),
             modules.DenseFeatureExtractor(
@@ -56,7 +56,7 @@ class MultiTaskNeuralNetwork(core.PyTorchModel):
                 dim_hidden=dim_hidden,
                 depth=depth - 1,
                 negative_slope=negative_slope,
-                batch_norm=batch_norm,
+                layer_norm=layer_norm,
                 dropout_rate=dropout_rate,
                 spectral_norm=spectral_norm,
                 activate_output=True,
