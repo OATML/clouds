@@ -284,7 +284,7 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
     def predict_tau(self, dataset):
         dl = data.DataLoader(
             dataset,
-            batch_size=2 * self.batch_size,
+            batch_size=1,
             shuffle=False,
             drop_last=False,
             num_workers=self.num_workers,
@@ -294,9 +294,24 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
         self.network_y.eval()
         with torch.no_grad():
             for batch in dl:
-                inputs, treatments, _ = self.preprocess(batch)
-                mu0.append(self.network_y([inputs, torch.zeros_like(treatments)]).mean)
-                mu1.append(self.network_y([inputs, torch.ones_like(treatments)]).mean)
+                inputs, treatments, _, position = self.preprocess(batch)
+                inputs_mask = inputs[:, :, :1].isnan().transpose(-2, -1) == False
+                mu0.append(
+                    self.network_y(
+                        inputs=inputs,
+                        treatments=torch.zeros_like(treatments),
+                        position=position,
+                        inputs_mask=inputs_mask,
+                    ).mean
+                )
+                mu1.append(
+                    self.network_y(
+                        inputs=inputs,
+                        treatments=torch.ones_like(treatments),
+                        position=position,
+                        inputs_mask=inputs_mask,
+                    ).mean
+                )
         if dataset.targets_xfm is not None:
             mu0 = dataset.targets_xfm.inverse_transform(
                 torch.cat(mu0, dim=0).to("cpu").numpy()
@@ -309,7 +324,7 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
     def predict_y_mean(self, dataset):
         dl = data.DataLoader(
             dataset,
-            batch_size=2 * self.batch_size,
+            batch_size=1,
             shuffle=False,
             drop_last=False,
             num_workers=self.num_workers,
@@ -318,8 +333,16 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
         self.network_y.eval()
         with torch.no_grad():
             for batch in dl:
-                inputs, treatments, _ = self.preprocess(batch)
-                mean.append(self.network_y([inputs, treatments]).mean)
+                inputs, treatments, _, position = self.preprocess(batch)
+                inputs_mask = inputs[:, :, :1].isnan().transpose(-2, -1) == False
+                mean.append(
+                    self.network_y(
+                        inputs=inputs,
+                        treatments=treatments,
+                        position=position,
+                        inputs_mask=inputs_mask,
+                    ).mean
+                )
         if dataset.targets_xfm is not None:
             mean = dataset.targets_xfm.inverse_transform(
                 torch.cat(mean, dim=0).to("cpu").numpy()
@@ -329,7 +352,7 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
     def sample_y(self, dataset):
         dl = data.DataLoader(
             dataset,
-            batch_size=2 * self.batch_size,
+            batch_size=1,
             shuffle=False,
             drop_last=False,
             num_workers=self.num_workers,
@@ -338,8 +361,16 @@ class MultiTaskAttentionNetwork(core.PyTorchModel):
         self.network_y.eval()
         with torch.no_grad():
             for batch in dl:
-                inputs, treatments, _ = self.preprocess(batch)
-                y.append(self.network_y([inputs, treatments]).sample())
+                inputs, treatments, _, position = self.preprocess(batch)
+                inputs_mask = inputs[:, :, :1].isnan().transpose(-2, -1) == False
+                y.append(
+                    self.network_y(
+                        inputs=inputs,
+                        treatments=treatments,
+                        position=position,
+                        inputs_mask=inputs_mask,
+                    ).sample()
+                )
         if dataset.targets_xfm is not None:
             y = dataset.targets_xfm.inverse_transform(
                 torch.cat(y, dim=0).to("cpu").numpy()
