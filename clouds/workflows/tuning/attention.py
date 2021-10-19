@@ -8,8 +8,12 @@ from clouds import datasets
 
 def func(config):
     dataset_name = config.get("dataset_name")
-    train_dataset = datasets.DATASETS.get(dataset_name)(**config.get("ds_train"), pad=True)
-    valid_dataset = datasets.DATASETS.get(dataset_name)(**config.get("ds_valid"), pad=True)
+    train_dataset = datasets.DATASETS.get(dataset_name)(
+        **config.get("ds_train"), pad=True
+    )
+    valid_dataset = datasets.DATASETS.get(dataset_name)(
+        **config.get("ds_valid"), pad=True
+    )
 
     dim_hidden = config.get("dim_hidden")
     num_components = config.get("num_components")
@@ -48,8 +52,8 @@ def func(config):
 
 def run(config):
     space = {
-        "dim_hidden": tune.choice([50, 100, 200, 400, 800]),
-        "depth": tune.choice([1, 2, 3, 4, 5]),
+        "dim_hidden": tune.choice([64, 128, 256, 512, 1024]),
+        "depth": tune.choice([1, 2, 3, 4]),
         "num_heads": tune.choice([1, 2, 4]),
         "num_components": tune.choice([1, 2, 5, 10, 20]),
         "negative_slope": tune.choice([0.0, 0.1, 0.2, 0.3, -1.0]),
@@ -58,7 +62,7 @@ def run(config):
         "learning_rate": tune.choice([2e-4, 5e-4, 1e-3]),
         "batch_size": tune.choice([16, 32, 64]),
     }
-    algorithm = bohb.TuneBOHB(space, max_concurrent=5, metric="mean_loss", mode="min",)
+    algorithm = bohb.TuneBOHB(space, metric="mean_loss", mode="min",)
     scheduler = schedulers.HyperBandForBOHB(
         time_attr="training_iteration", max_t=config.get("epochs"),
     )

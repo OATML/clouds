@@ -79,6 +79,7 @@ def tune(
         num_gpus=context.obj["n_gpu"],
         dashboard_host="127.0.0.1",
         ignore_reinit_error=True,
+        object_store_memory=8000000000,
     )
     context.obj.update(
         {
