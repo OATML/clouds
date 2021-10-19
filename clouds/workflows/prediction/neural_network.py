@@ -4,7 +4,7 @@ from clouds import models
 from clouds import datasets
 
 
-def predict_ensemble(
+def predict(
     config, experiment_dir,
 ):
     dataset_name = config.get("dataset_name")
@@ -29,7 +29,6 @@ def predict_ensemble(
 
     experiment_dir = (
         Path(experiment_dir)
-        / "ensemble"
         / f"dh-{dim_hidden}_nc-{num_components}_dp-{depth}_ns-{negative_slope}_dr-{dropout_rate}_sn-{spectral_norm}_lr-{learning_rate}_bs-{batch_size}_ep-{epochs}"
     )
     config_path = experiment_dir / "config.json"

@@ -6,7 +6,7 @@ from clouds import models
 from clouds import datasets
 
 
-def tune_multitask(config):
+def func(config):
     dataset_name = config.get("dataset_name")
     train_dataset = datasets.DATASETS.get(dataset_name)(**config.get("ds_train"))
     valid_dataset = datasets.DATASETS.get(dataset_name)(**config.get("ds_valid"))
@@ -45,7 +45,7 @@ def tune_multitask(config):
     _ = outcome_model.fit(train_dataset, valid_dataset)
 
 
-def hyper_tune(config):
+def run(config):
     space = {
         "dim_hidden": tune.choice([50, 100, 200, 400, 800]),
         "depth": tune.choice([2, 3, 4, 5]),
@@ -61,7 +61,7 @@ def hyper_tune(config):
         time_attr="training_iteration", max_t=config.get("epochs"),
     )
     analysis = tune.run(
-        run_or_experiment=tune_multitask,
+        run_or_experiment=func,
         metric="mean_loss",
         mode="min",
         name="bohb",
