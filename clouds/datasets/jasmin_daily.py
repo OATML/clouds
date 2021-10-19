@@ -15,6 +15,7 @@ class JASMINDaily(data.Dataset):
         t_var: str = "tot_aod",
         y_vars: list = None,
         t_bins: int = 2,
+        pad: bool = False,
     ) -> None:
         super(JASMINDaily, self).__init__()
         # Handle default values
@@ -85,6 +86,21 @@ class JASMINDaily(data.Dataset):
         self.target_names = y_vars
         self.treatment_names = [t_var]
         self.split = split
+        self.pad = pad
+
+    @property
+    def data_frame(self):
+        data = np.hstack(
+            [
+                self.data_xfm.inverse_transform(np.vstack(self.covariates)),
+                np.vstack(self.treatments),
+                self.targets_xfm.inverse_transform(np.vstack(self.targets)),
+            ],
+        )
+        return pd.DataFrame(
+            data=data,
+            columns=self.data_names + self.treatment_names + self.target_names,
+        )
 
     def __len__(self) -> int:
         return len(self.targets)
@@ -94,7 +110,7 @@ class JASMINDaily(data.Dataset):
         treatments = self.treatments[index]
         targets = self.targets[index]
         position = self.position[index]
-        if self.split in ("train", "valid"):
+        if self.pad:
             num_samples = covariates.shape[0]
             if num_samples < 80:
                 diff = 80 - num_samples
@@ -111,6 +127,6 @@ class JASMINDaily(data.Dataset):
                 targets = targets[sample]
                 position = position[sample]
         position -= position.mean(0)
-        if self.split == "train":
+        if self.split == "train" and self.pad:
             position += np.random.uniform(-10, 10, size=(1, 2))
         return covariates, treatments, targets, position
