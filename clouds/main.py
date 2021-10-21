@@ -173,17 +173,21 @@ def jasmin_daily(
 
 @cli.command("ensemble")
 @click.pass_context
-@click.option("--dim-hidden", default=800, type=int, help="num neurons")
-@click.option("--num-components", default=20, type=int, help="num mixture components")
-@click.option("--depth", default=3, type=int, help="depth of feature extractor")
+@click.option("--dim-hidden", default=800, type=int, help="num neurons, default=800")
+@click.option(
+    "--num-components", default=20, type=int, help="num mixture components, default=20"
+)
+@click.option(
+    "--depth", default=3, type=int, help="depth of feature extractor, default=3"
+)
 @click.option(
     "--negative-slope",
     default=0.0,
     type=float,
-    help="negative slope of leaky relu, default=-1 use elu",
+    help="negative slope of leaky relu, default=0.0",
 )
 @click.option(
-    "--dropout-rate", default=0.5, type=float, help="dropout rate, default=0.1"
+    "--dropout-rate", default=0.5, type=float, help="dropout rate, default=0.5"
 )
 @click.option(
     "--spectral-norm",
@@ -195,13 +199,13 @@ def jasmin_daily(
     "--learning-rate",
     default=2e-4,
     type=float,
-    help="learning rate for gradient descent, default=1e-3",
+    help="learning rate for gradient descent, default=2e-4",
 )
 @click.option(
     "--batch-size",
     default=4096,
     type=int,
-    help="number of examples to read during each training step, default=100",
+    help="number of examples to read during each training step, default=4096",
 )
 @click.option(
     "--epochs", type=int, default=400, help="number of training epochs, default=400"
@@ -210,7 +214,7 @@ def jasmin_daily(
     "--ensemble-size",
     type=int,
     default=10,
-    help="number of models in ensemble, default=1",
+    help="number of models in ensemble, default=10",
 )
 def ensemble(
     context,
@@ -275,45 +279,51 @@ def ensemble(
 
 @cli.command("attention")
 @click.pass_context
-@click.option("--dim-hidden", default=200, type=int, help="num neurons")
-@click.option("--num-components", default=10, type=int, help="num mixture components")
-@click.option("--depth", default=2, type=int, help="depth of feature extractor")
-@click.option("--num-heads", default=2, type=int, help="multi-head attention parameter")
+@click.option("--dim-hidden", default=128, type=int, help="num neurons, default=128")
+@click.option(
+    "--num-components", default=10, type=int, help="num mixture components, default=10"
+)
+@click.option(
+    "--depth", default=2, type=int, help="depth of feature extractor, default=2"
+)
+@click.option(
+    "--num-heads", default=2, type=int, help="multi-head attention parameter, default=2"
+)
 @click.option(
     "--negative-slope",
-    default=0.2,
+    default=-1,
     type=float,
-    help="negative slope of leaky relu, default=-1 use elu",
+    help="negative slope of leaky relu, default=-1 use GELU",
 )
 @click.option(
     "--spectral-norm",
-    default=3.0,
+    default=0.0,
     type=float,
     help="Spectral normalization coefficient. If 0.0 do not use spectral norm, default=0.0",
 )
 @click.option(
-    "--dropout-rate", default=0.1, type=float, help="dropout rate, default=0.1"
+    "--dropout-rate", default=0.0, type=float, help="dropout rate, default=0.0"
 )
 @click.option(
     "--learning-rate",
-    default=1e-3,
+    default=2e-4,
     type=float,
-    help="learning rate for gradient descent, default=1e-3",
+    help="learning rate for gradient descent, default=2e-4",
 )
 @click.option(
     "--batch-size",
     default=64,
     type=int,
-    help="number of examples to read during each training step, default=100",
+    help="number of examples to read during each training step, default=64",
 )
 @click.option(
-    "--epochs", type=int, default=200, help="number of training epochs, default=400"
+    "--epochs", type=int, default=200, help="number of training epochs, default=200"
 )
 @click.option(
     "--ensemble-size",
     type=int,
     default=10,
-    help="number of models in ensemble, default=1",
+    help="number of models in ensemble, default=10",
 )
 def attention(
     context,

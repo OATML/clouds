@@ -89,7 +89,7 @@ def outcome_scatterplots(dataframe, output_dir):
             "ytick.color": text_color,
         }
     )
-    fig = pyplot.figure(figsize=(12, 2.25))
+    fig = pyplot.figure(figsize=(12, 3))
 
     ax = pyplot.subplot(1, 4, 1)
     g = sns.scatterplot(

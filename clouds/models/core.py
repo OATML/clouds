@@ -174,9 +174,9 @@ class PyTorchModel(BaseModel):
             engine.terminate()
 
     def on_training_completed(self, engine, loader):
+        self.save()
+        self.load()
         if not tune.is_session_enabled():
-            self.save()
-            self.load()
             self.evaluator.run(loader)
             metric_values = self.evaluator.state.metrics
             print("Metrics Epoch", engine.state.epoch)
@@ -201,8 +201,9 @@ class PyTorchModel(BaseModel):
                 )
 
     def save(self):
-        p = os.path.join(self.job_dir, "best_checkpoint.pt")
-        torch.save(self.best_state, p)
+        if not tune.is_session_enabled():
+            p = os.path.join(self.job_dir, "best_checkpoint.pt")
+            torch.save(self.best_state, p)
 
     def load(self):
         if tune.is_session_enabled():
