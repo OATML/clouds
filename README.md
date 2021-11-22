@@ -1,5 +1,7 @@
 # clouds
 
+![Causal Diagram](assets/causaldiagram.png)
+
 Code to reproduce the results presented in [Using Non-Linear Causal Models to Study Aerosol-Cloud Interactions in the Southeast Pacific](https://arxiv.org/abs/2110.15084).
 
 ```bibtex
@@ -53,7 +55,7 @@ In this example we write to the directory `output/`, which will be created where
 
 ### Make predictions
 
-Now we load the trained model and predict the CATE with it. 
+Now we load the trained model and predict the CATE with it.
 
 ```.sh
 clouds predict --job-dir output/ --gpu-per-model 0.25 jasmin --root data/four_outputs_liqcf_pacific.csv ensemble
@@ -90,6 +92,10 @@ clouds plot --csv-path output/jasmin/ensemble/dh-800_nc-20_dp-3_ns-0.0_dr-0.5_sn
 ```
 
 You can now look in the folder `output/ensemble` and see the results.
+
+![Effect heterogeneity of AOD on Effective Radius](assets/aerosol_720.png)
+
+![Predicted vs Measured Effective Radius](assets/scatterplots.png)
 
 ### Hyperparameter Tuning
 
