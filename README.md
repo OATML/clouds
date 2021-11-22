@@ -1,8 +1,22 @@
 # clouds
 
-![Causal Diagram](assets/causaldiagram.png)
+| **[Abstract](#abstract)**
+| **[Citation](#citation)**
+| **[Installation](#installation)**
+| **[Download](#download)**
+| **[Quince Model](#quince)**
 
 Code to reproduce the results presented in [Using Non-Linear Causal Models to Study Aerosol-Cloud Interactions in the Southeast Pacific](https://arxiv.org/abs/2110.15084).
+
+![Causal Diagram](assets/causaldiagram.png)
+
+## Abstract
+
+Aerosol-cloud interactions include a myriad of effects that all begin when aerosol enters a cloud and acts as cloud condensation nuclei (CCN). An increase in CCN results in a decrease in the mean cloud droplet size ($r_e$). The smaller droplet size leads to brighter, more expansive, and longer lasting clouds that reflect more incoming sunlight, thus cooling the earth. Globally, aerosol-cloud interactions cool the Earth, however the strength of the effect is heterogeneous over different meteorological regimes. Understanding how aerosol-cloud interactions evolve as a function of the local environment can help us better understand sources of error in our Earth system models, which currently fail to reproduce the observed relationships. In this work we use recent non-linear, causal machine learning methods to study the heterogeneous effects of aerosols on cloud droplet radius.
+
+## Citation
+
+If you find this code useful for your own work, please cite:
 
 ```bibtex
 @article{jesson2021using,
@@ -12,10 +26,6 @@ Code to reproduce the results presented in [Using Non-Linear Causal Models to St
   year={2021}
 }
 ```
-
-## Abstract
-
-Aerosol-cloud interactions include a myriad of effects that all begin when aerosol enters a cloud and acts as cloud condensation nuclei (CCN). An increase in CCN results in a decrease in the mean cloud droplet size ($r_e$). The smaller droplet size leads to brighter, more expansive, and longer lasting clouds that reflect more incoming sunlight, thus cooling the earth. Globally, aerosol-cloud interactions cool the Earth, however the strength of the effect is heterogeneous over different meteorological regimes. Understanding how aerosol-cloud interactions evolve as a function of the local environment can help us better understand sources of error in our Earth system models, which currently fail to reproduce the observed relationships. In this work we use recent non-linear, causal machine learning methods to study the heterogeneous effects of aerosols on cloud droplet radius.
 
 ## Installation
 
@@ -32,7 +42,7 @@ conda activate clouds
 pip install -e .
 ```
 
-## Download Data
+<h2 id="download">Download Data</h2>
 
 Make a directory to store the data and download the dataset to that directory.
 
@@ -41,7 +51,7 @@ mkdir data
 wget -P data/ "https://github.com/anndvision/data/raw/main/jasmin/four_outputs_liqcf_pacific.csv"
 ```
 
-## Quince Model
+<h2 id="quince">Quince Model</h2>
 
 ### Train model
 
