@@ -8,11 +8,11 @@
 
 Code to reproduce the results presented in [Using Non-Linear Causal Models to Study Aerosol-Cloud Interactions in the Southeast Pacific](https://arxiv.org/abs/2110.15084).
 
-![Causal Diagram](assets/causaldiagram.png)
-
 ## Abstract
 
 Aerosol-cloud interactions include a myriad of effects that all begin when aerosol enters a cloud and acts as cloud condensation nuclei (CCN). An increase in CCN results in a decrease in the mean cloud droplet size ($r_e$). The smaller droplet size leads to brighter, more expansive, and longer lasting clouds that reflect more incoming sunlight, thus cooling the earth. Globally, aerosol-cloud interactions cool the Earth, however the strength of the effect is heterogeneous over different meteorological regimes. Understanding how aerosol-cloud interactions evolve as a function of the local environment can help us better understand sources of error in our Earth system models, which currently fail to reproduce the observed relationships. In this work we use recent non-linear, causal machine learning methods to study the heterogeneous effects of aerosols on cloud droplet radius.
+
+![Causal Diagram](assets/causaldiagram.png)
 
 ## Citation
 
